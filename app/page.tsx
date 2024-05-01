@@ -7,7 +7,7 @@ export default function Home() {
     <main className="flex min-h-screen flex-col items-center justify-center bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-slate-800 to-black">
       <div className="space-y-6 text-center">
          <h1 className="text-6xl font-semibold text-white drop-shadow-md">
-          SentryKey : Role Based Authentication App
+          SentryKey
          </h1>
          <p className="text-white text-lg">Role based authentication app</p>
          <div>
