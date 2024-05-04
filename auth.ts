@@ -5,6 +5,7 @@ import {PrismaAdapter} from "@auth/prisma-adapter"
 import { getUserById } from "./data/user"
 import { db } from "./lib/db"
 import { UserRole } from "@prisma/client"
+import { getTwoFactorConfirmationByUserId } from "./data/two-factor-confirmation"
 
 export const { handlers, auth, signIn, signOut } = NextAuth({
   events:{
@@ -25,7 +26,16 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
       //Prevent signIn Without Email Verification
       if(!existingUser?.emailVerified) return false;
 
-      // TODO:Add F2A
+      if(existingUser.isTwoFactorEnabled){
+        const twoFactorConfirmation = await getTwoFactorConfirmationByUserId(existingUser.id); 
+        console.log({twoFactorConfirmation});
+        if(!twoFactorConfirmation) return false;
+
+        await db.twoFactorContirmation.delete({
+          where: {id: twoFactorConfirmation.id}
+        
+        })
+      }
       return true;
     },
     async session({token,session}){

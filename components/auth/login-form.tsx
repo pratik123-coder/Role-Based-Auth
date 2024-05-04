@@ -30,74 +30,109 @@ export const LoginForm = () => {
             password: ""
         }
     })
+    const [showTwoFactor, setShowTwoFactor] = useState<boolean>(false);
     const [error, setError] = useState<string | undefined>("");
     const [success, setSuccess] = useState<string | undefined>("");
-    const [isPending,startTransition] = useTransition();
+    const [isPending, startTransition] = useTransition();
     const onSubmit = (values: z.infer<typeof LoginSchema>) => {
         setError("");
         setSuccess("");
         startTransition(() => {
             login(values)
-            .then((data) => {
-                setError(data?.error);
-                setSuccess(data?.success);
-            });
+                .then((data) => {
+                    if (data?.error) {
+                        form.reset();
+                        setError(data.error);
+                    }
+                    if (data?.success) {
+                        form.reset();
+                        setSuccess(data.success);
+                    }
+                    if (data?.twoFactor) {
+                        setShowTwoFactor(true);
+                    }
+                })
+                .catch(() => setError("An error occurred! Something Went Wrong"));
         });
     };
     return (
-        <CardWrapper 
-        headerLable="Welcome Back"
-        backButtonLable="Don't have an account?"
-        backButtonHref="/auth/register"
-        showSocial
+        <CardWrapper
+            headerLable="Welcome Back"
+            backButtonLable="Don't have an account?"
+            backButtonHref="/auth/register"
+            showSocial
         >
             <Form {...form}>
-                <form 
-                onSubmit={form.handleSubmit(onSubmit)}
-                className="space-y-6"
+                <form
+                    onSubmit={form.handleSubmit(onSubmit)}
+                    className="space-y-6"
                 >
                     <div className="space-y-4">
-                        <FormField 
-                        control={form.control}
-                        name="email"
-                        render={({field})=>(
-                            <FormItem>
-                                <FormLabel>Email</FormLabel>
-                                <FormControl>
-                                    <Input
-                                    {...field}
-                                    disabled={isPending}
-                                    placeholder="Email"
-                                    type="email"
-                                    />
-                                </FormControl>
-                                <FormMessage />
-                            </FormItem>
-                        )}
+                        {showTwoFactor && (
+                            <FormField
+                            control={form.control}
+                            name="code"
+                            render={({ field }) => (
+                                <FormItem>
+                                    <FormLabel>Two Factor Code</FormLabel>
+                                    <FormControl>
+                                        <Input
+                                            {...field}
+                                            disabled={isPending}
+                                            placeholder="123456"
+                                        />
+                                    </FormControl>
+                                    <FormMessage />
+                                </FormItem>
+                            )}
                         />
-                        <FormField 
-                        control={form.control}
-                        name="password"
-                        render={({field})=>(
-                            <FormItem>
-                                <FormLabel>Password</FormLabel>
-                                <FormControl>
-                                    <Input
-                                    {...field}
-                                    disabled={isPending}
-                                    placeholder="******"
-                                    type="password"
-                                    />
-                                </FormControl>
-                                <FormMessage />
-                            </FormItem>
+
                         )}
-                        />
+                        {!showTwoFactor &&(
+                            <>
+                            <FormField
+                                control={form.control}
+                                name="email"
+                                render={({ field }) => (
+                                    <FormItem>
+                                        <FormLabel>Email</FormLabel>
+                                        <FormControl>
+                                            <Input
+                                                {...field}
+                                                disabled={isPending}
+                                                placeholder="Email"
+                                                type="email"
+                                            />
+                                        </FormControl>
+                                        <FormMessage />
+                                    </FormItem>
+                                )}
+                            />
+                            <FormField
+                                control={form.control}
+                                name="password"
+                                render={({ field }) => (
+                                    <FormItem>
+                                        <FormLabel>Password</FormLabel>
+                                        <FormControl>
+                                            <Input
+                                                {...field}
+                                                disabled={isPending}
+                                                placeholder="******"
+                                                type="password"
+                                            />
+                                        </FormControl>
+                                        <FormMessage />
+                                    </FormItem>
+                                )}
+                            />
+                        </>
+                        )}
                     </div>
                     <FormError message={error} />
                     <FormSuccess message={success} />
                     <Button type="submit" className="w-full" disabled={isPending}>
-                        Login
+                        {showTwoFactor ? "Verify" : "Login"}
                     </Button>
                 </form>
             </Form>

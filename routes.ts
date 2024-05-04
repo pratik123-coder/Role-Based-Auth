@@ -1,6 +1,7 @@
 // array of routes that dont require authentication
 export const publicRoutes = [
-    "/"
+    "/",
+    "/auth/new-verification",
 ];
 
 export const authRoutes = [

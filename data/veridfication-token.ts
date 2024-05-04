@@ -12,7 +12,19 @@ export const getVerificationTokenByToken = async (token: string) => {
         return null;
     }
 }
-
+export const getUserVerificationByEmail = async (email: string) => {
+    try {
+        const alreadyVerified = await db.user.findFirst({
+            where: {
+                email: email,
+                emailVerified: { not: null }, // Checking if emailVerified is not null (i.e., verified)
+            },
+        });
+        return true;
+    } catch (error) {
+        return false;
+    }
+}
 export const getVerificationTokenByEmail = async (email: string) => {
     try {
         const verificationToken = await db.verificationToken.findFirst({
