@@ -13,7 +13,7 @@ export const LogoutButton = ({
         logout();
     }
     return (
-        <button type="submit" onClick={onClick}>
+        <button type="submit" onClick={onClick} className="cursor=pointer">
             {children}
         </button>
     );

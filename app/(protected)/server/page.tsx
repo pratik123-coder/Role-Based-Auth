@@ -1,18 +1,12 @@
-"use client"
-import { logout } from "@/actions/logout";
-import { useCurrentUser } from "@/hooks/use-current-user";
 
+import { UserInfo } from "@/components/user-info";
+import { currentUser } from "@/lib/auth";
 
-const Server = () => {
-    const user = useCurrentUser();
-    const onClick = () => {
-        logout();
-    }
+const Server = async () => {
+    const user = await currentUser();
     return ( 
-        <div className="bg-white p-10 rounded-xl">
-            
-        </div>
-     );
+        <UserInfo user={user} lable="Server Component" />
+    );
 }
  
 export default Server;

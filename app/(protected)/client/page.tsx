@@ -1,18 +1,16 @@
-"use client"
-import { logout } from "@/actions/logout";
+"use client";
+import { UserInfo } from "@/components/user-info";
 import { useCurrentUser } from "@/hooks/use-current-user";
 
 
-const Client = () => {
+const Client =  () => {
     const user = useCurrentUser();
-    const onClick = () => {
-        logout();
-    }
     return ( 
-        <div className="bg-white p-10 rounded-xl">
-            
-        </div>
-     );
+        <UserInfo 
+        user={user} 
+        lable="Client Component" 
+        />
+    );
 }
  
 export default Client;
